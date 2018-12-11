@@ -1,16 +1,22 @@
 const fs = require('fs');
 const db = require('./db');
+const alert = require('./alert');
 
 // Load all of the monitors from the monitor folder
 const monitors = fs.readdirSync(`${__dirname}/monitors/`).map(fname => require(`./monitors/${fname}`));
 const IPsToMonitor = process.env.IPS_TO_MONITOR.split(', ');
 
 async function handleStatus(type, ip, success) {
-    console.log(`${type} is ${(success ? 'up' : 'down')}`);
+    const message = `Final CDX: The ${type} is ${(success ? 'up' : 'down')}!`;
+    console.log(message);
     try {
-        const lastStatus = db.lastStatus(type, ip);
+        const lastStatus = await db.lastStatus(type, ip);
         if (lastStatus === !success) {
-            //Send alert
+            alert(message)
+                .catch(err => {
+                    console.log('Email sending failed');
+                    console.log(err);
+                });
         }
     } catch (err) {
         console.log('DB update failed');

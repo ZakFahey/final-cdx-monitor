@@ -37,6 +37,7 @@ async function initialize() {
 }
 
 async function logStatus(type, ip, success) {
+    console.log('logging status');
     await Statuses.create({
         type,
         ip,
@@ -45,9 +46,10 @@ async function logStatus(type, ip, success) {
 }
 
 async function lastStatus(type, ip) {
+    console.log('fetching last status');
     const lastEntry = await Statuses.findAll({
         limit: 1,
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         where: { type, ip }
     });
     if (lastEntry.length === 0) return null;
