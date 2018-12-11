@@ -7,7 +7,7 @@ const monitors = fs.readdirSync(`${__dirname}/monitors/`).map(fname => require(`
 const IPsToMonitor = process.env.IPS_TO_MONITOR.split(', ');
 
 async function handleStatus(type, ip, success) {
-    const message = `Final CDX: The ${type} is ${(success ? 'up' : 'down')}!`;
+    const message = `Final CDX: The ${type} is ${(success ? 'up' : 'down')} on IP ${ip}`;
     console.log(message);
     try {
         const lastStatus = await db.lastStatus(type, ip);
