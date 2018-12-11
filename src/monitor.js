@@ -11,7 +11,7 @@ async function handleStatus(type, ip, success) {
     console.log(message);
     try {
         const lastStatus = await db.lastStatus(type, ip);
-        if (lastStatus === !success) {
+        if (lastStatus !== null && lastStatus != success) {
             alert(message)
                 .catch(err => {
                     console.log('Email sending failed');
