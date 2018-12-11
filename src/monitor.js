@@ -36,7 +36,12 @@ async function run() {
             const monitor = monitors[m];
             for (let i = 0; i < IPsToMonitor.length; i++) {
                 const ip = IPsToMonitor[i];
-                monitor.check(ip)
+                Promise.race([
+                    monitor.check(ip),
+                    new Promise((resolve, reject) => {
+                        setTimeout(reject, 12000);
+                    })
+                ])
                     .then(async result => handleStatus(monitor.name, ip, true))
                     .catch(async err => handleStatus(monitor.name, ip, false));
             }
