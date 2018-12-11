@@ -1,0 +1,25 @@
+{
+  "name": "final-cdx-monitor",
+  "version": "1.0.0",
+  "description": "Monitors services for Professor Franco's Final CDX assignment",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZakFahey/final-cdx-monitor.git"
+  },
+  "author": "Zak Fahey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZakFahey/final-cdx-monitor/issues"
+  },
+  "homepage": "https://github.com/ZakFahey/final-cdx-monitor#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "fs": "0.0.1-security",
+    "mysql2": "^1.6.4",
+    "sequelize": "^4.41.2"
+  }
+}
