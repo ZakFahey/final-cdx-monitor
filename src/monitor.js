@@ -1,9 +1,6 @@
-const fs = require('fs');
 const db = require('./db');
 const alert = require('./alert');
 
-// Load all of the monitors from the monitor folder
-const monitors = fs.readdirSync(`${__dirname}/monitors/`).map(fname => require(`./monitors/${fname}`));
 const IPsToMonitor = process.env.IPS_TO_MONITOR.split(', ');
 
 async function handleStatus(type, ip, success) {
@@ -29,7 +26,7 @@ async function handleStatus(type, ip, success) {
         });
 }
 
-async function run() {
+async function run(monitors) {
     setInterval(() => {
         console.log('pinging services');
         for (let m = 0; m < monitors.length; m++) {
