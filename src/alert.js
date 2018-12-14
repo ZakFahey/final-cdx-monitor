@@ -1,3 +1,7 @@
+/*
+ * Module to send emails out when a service goes up or down.
+ */
+
 const send = require('gmail-send')({
     user: process.env.EMAIL_SERVER_USERNAME,
     pass: process.env.EMAIL_SERVER_PASSWORD,

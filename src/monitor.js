@@ -9,6 +9,7 @@ async function handleStatus(type, ip, success) {
     try {
         const lastStatus = await db.lastStatus(type, ip);
         if (lastStatus !== null && lastStatus != success) {
+            // Status changed from up to down or down to up, so send email alert.
             alert(message)
                 .catch(err => {
                     console.log('Email sending failed');
@@ -19,6 +20,7 @@ async function handleStatus(type, ip, success) {
         console.log('DB update failed');
         console.log(err);
     }
+    // Log the status of the service
     db.logStatus(type, ip, success)
         .catch(err => {
             console.log('DB update failed');
@@ -26,24 +28,31 @@ async function handleStatus(type, ip, success) {
         });
 }
 
-async function run(monitors) {
-    setInterval(() => {
-        console.log('pinging services');
-        for (let m = 0; m < monitors.length; m++) {
-            const monitor = monitors[m];
-            for (let i = 0; i < IPsToMonitor.length; i++) {
-                const ip = IPsToMonitor[i];
-                Promise.race([
-                    monitor.check(ip),
-                    new Promise((resolve, reject) => {
-                        setTimeout(reject, 12000);
-                    })
-                ])
-                    .then(async result => handleStatus(monitor.name, ip, true))
-                    .catch(async err => handleStatus(monitor.name, ip, false));
-            }
+function run(monitors) {
+    // Entry point for the module. Pings all the services every minute.
+    setInterval(pingServices, 60000);
+}
+
+async function pingServices() {
+    console.log('pinging services');
+    // Loop through each combination of service and IP address.
+    for (let m = 0; m < monitors.length; m++) {
+        const monitor = monitors[m];
+        for (let i = 0; i < IPsToMonitor.length; i++) {
+            const ip = IPsToMonitor[i];
+            // Run the monitor with a 12-second timeout.
+            Promise.race([
+                monitor.check(ip),
+                new Promise((resolve, reject) => {
+                    setTimeout(reject, 12000);
+                })
+            ])
+                // Check was successful
+                .then(async result => handleStatus(monitor.name, ip, true))
+                // Check was unsuccessful
+                .catch(async err => handleStatus(monitor.name, ip, false));
         }
-    }, 60000);
+    }
 }
 
 module.exports = run;

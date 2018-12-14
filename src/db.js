@@ -1,9 +1,14 @@
+/*
+ * MySQL database to log which services are up or down.
+ */
+
 const Sequelize = require('sequelize');
 
 let sequelize, Statuses;
 
 async function initialize() {
     console.log('initializing database');
+    // Connect to the database.
     sequelize = new Sequelize('final-cdx-monitor', process.env.RDS_USERNAME, process.env.RDS_PASSWORD, {
         host: process.env.RDS_HOSTNAME,
         port: process.env.RDS_PORT,
@@ -11,6 +16,7 @@ async function initialize() {
         operatorsAliases: false
     });
 
+    // Create the statuses table if it does not exist.
     Statuses = sequelize.define('statuses', {
         id: {
             type: Sequelize.INTEGER,
@@ -46,6 +52,7 @@ async function logStatus(type, ip, success) {
 }
 
 async function lastStatus(type, ip) {
+    // Gets the current status of the given service on the given ip address
     console.log('fetching last status');
     const lastEntry = await Statuses.findAll({
         limit: 1,

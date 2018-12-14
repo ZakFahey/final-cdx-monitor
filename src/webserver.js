@@ -1,3 +1,8 @@
+/*
+ * Runs a simple web console that lists which services are online.
+ * Connect by going to this application's ip in your web browser.
+ */
+
 const Hapi = require('hapi');
 const db = require('./db');
 

@@ -5,8 +5,8 @@ module.exports = {
     async check(ip) {
         const connection = await mysql.createConnection({
             host: ip,
-            user: 'wrong',
-            password: 'wrong'
+            user: 'root',
+            password: ''
         });
     }
 };
