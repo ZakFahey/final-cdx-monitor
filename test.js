@@ -1,6 +1,6 @@
 /*
  * Runs an individual monitoring program once.
- * To use, run IPS_TO_MONITOR=<ip> MONITOR=<daytime | ftp | icmp | ipp | mysql | website | wordpress> npm run test
+ * To use, run IP=<ip> MONITOR=<daytime | ftp | icmp | ipp | mysql | website | wordpress> npm run test
  */
 
 const monitor = require(`./src/monitors/${process.env.MONITOR}`);
