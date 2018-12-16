@@ -2,8 +2,10 @@ const db = require('./db');
 const alert = require('./alert');
 
 const IPsToMonitor = process.env.IPS_TO_MONITOR.split(', ');
+let monitors;
 
-function run(monitors) {
+function run(m) {
+    monitors = m;
     // Entry point for the module. Pings all the services every minute.
     setInterval(pingServices, 60000);
 }
