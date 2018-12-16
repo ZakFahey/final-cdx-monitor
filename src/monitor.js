@@ -3,31 +3,6 @@ const alert = require('./alert');
 
 const IPsToMonitor = process.env.IPS_TO_MONITOR.split(', ');
 
-async function handleStatus(type, ip, success) {
-    const message = `Final CDX: The ${type} is ${(success ? 'up' : 'down')} on IP ${ip}`;
-    console.log(message);
-    try {
-        const lastStatus = await db.lastStatus(type, ip);
-        if (lastStatus !== null && lastStatus != success) {
-            // Status changed from up to down or down to up, so send email alert.
-            alert(message)
-                .catch(err => {
-                    console.log('Email sending failed');
-                    console.log(err);
-                });
-        }
-    } catch (err) {
-        console.log('DB update failed');
-        console.log(err);
-    }
-    // Log the status of the service
-    db.logStatus(type, ip, success)
-        .catch(err => {
-            console.log('DB update failed');
-            console.log(err);
-        });
-}
-
 function run(monitors) {
     // Entry point for the module. Pings all the services every minute.
     setInterval(pingServices, 60000);
@@ -53,6 +28,31 @@ async function pingServices() {
                 .catch(async err => handleStatus(monitor.name, ip, false));
         }
     }
+}
+
+async function handleStatus(type, ip, success) {
+    const message = `Final CDX: The ${type} is ${(success ? 'up' : 'down')} on IP ${ip}`;
+    console.log(message);
+    try {
+        const lastStatus = await db.lastStatus(type, ip);
+        if (lastStatus !== null && lastStatus != success) {
+            // Status changed from up to down or down to up, so send email alert.
+            alert(message)
+                .catch(err => {
+                    console.log('Email sending failed');
+                    console.log(err);
+                });
+        }
+    } catch (err) {
+        console.log('DB update failed');
+        console.log(err);
+    }
+    // Log the status of the service
+    db.logStatus(type, ip, success)
+        .catch(err => {
+            console.log('DB update failed');
+            console.log(err);
+        });
 }
 
 module.exports = run;
